@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime as dt
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,10 +23,27 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    date_created = db.Column(db.Date, default=datetime.datetime.now)
+    date_created = db.Column(db.Date, default=dt.now)
     polls = db.relationship('Poll', backref='creator', lazy=True)
     votes = db.relationship('Vote', backref='voter', lazy=True)
 
+    # Flask-Login integration
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
+    # Optional: Add methods to set and check passwords
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
@@ -77,13 +94,13 @@ def register():
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        return redirect('home')
+        return redirect('/')
     return render_template('register.html')
 
 def check_if_user_exists(username):
-    if User.filter_by(username=username).first():
-            return True
-    return False
+    if not User.query.filter_by(username=username).first():
+            return False
+    return True
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,10 +108,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        user = User.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
 
-        if check_password_hash(user.password, password):
-            login_user(username)
+        if user and check_password_hash(user.password, password):
+            login_user(user)
             return redirect(url_for('home'))
         else:
             return jsonify({'message': 'Username and Password do not match'}), 400
@@ -124,9 +141,32 @@ def create_poll():
     return render_template('create_poll.html')
 
 
+@app.route('/poll', methods=['POST'])
+def poll(poll_id):
+    
+    poll = get_poll(poll_id)
+
+    return render_template('poll.html', poll=poll)
+
+
+def get_poll(poll_id):
+    return Poll.query.get(poll_id)
+
+def check_if_logged_in():
+    if current_user.is_authenticated:
+        return True
+    return False
+
+
 @app.route('/')
 def home():
-    return render_template('home.html')
+    logged_in  = check_if_logged_in()
+    polls = get_all_polls()
+    return render_template('home.html', logged_in=logged_in, polls=polls)
+
+
+def get_all_polls():
+    return Poll.query.all()
 
 
 if __name__ == '__main__':

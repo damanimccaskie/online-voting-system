@@ -1,25 +1,40 @@
-{% extends 'base.html' %} {% block title %}Create Poll{% endblock %} {% block content
-    %}
+{% extends 'base.html' %} {% block title %}Create Poll{% endblock %} {% block
+content %}
 <div class="container">
-    <h1>Create Poll</h1>
-    <form action="" method="POST">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title...">
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" placeholder="Enter Description...">
-          </div>
-          <div class="mb-3">
-            <label for="choices" class="form-label">Choices</label>
-            <textarea class="form-control" id="choices" name="choices" placeholder="Enter Choices...">
-          </div>
-          <div class="mb-3">
-            <button class="btn btn-primary" type="submit">Submit</button>
-          </div>
-    </form>
+  <h3>Create Poll</h3>
+  <form action="" method="POST">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        placeholder="Enter Title..."
+      />
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        id="description"
+        name="description"
+        placeholder="Enter Description..."
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="choices" class="form-label">Choices</label>
+      <textarea
+        class="form-control"
+        id="choices"
+        name="choices"
+        placeholder="Enter Choices..."
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+  </form>
 </div>
 
-
-    {% endblock %}
+{% endblock %}

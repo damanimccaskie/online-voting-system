@@ -1,7 +1,19 @@
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content
     %}
 <div class="container">
-    
+    <h2>Polls</h2>
+    <small>
+        {% if logged_in %}
+        Logged In
+        {% else %}
+        Logged Out
+        {% endif %}
+    </small>
+    <ul>
+        {% for poll in polls %}
+        <li>{{ poll.title }}</li>
+        {% endfor %}
+    </ul>
 </div>
 
 
