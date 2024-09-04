@@ -126,22 +126,25 @@ def create_poll():
         choices = request.form['choices']
         creator_id = current_user.id
 
-        new_poll = Poll(title=title, description=description, creator_id=creator_id)
+        if check_if_logged_in():
+            new_poll = Poll(title=title, description=description, creator_id=creator_id)
 
-        db.session.add(new_poll)
-        db.session.commit()
+            db.session.add(new_poll)
+            db.session.commit()
 
-        choices = choices.split(',')
-        for choice in choices:
-            new_choice = Choice(text=choice, poll_id=new_poll.poll_id)
-            db.session.add(new_choice)
-        db.session.commit()
+            choices = choices.split(',')
+            for choice in choices:
+                new_choice = Choice(text=choice, poll_id=new_poll.id)
+                db.session.add(new_choice)
+            db.session.commit()
 
-        return jsonify({'message': 'Poll created successfully'}), 201
+            return jsonify({'message': 'Poll created successfully'}), 201
+        else:
+            return jsonify({'message': 'Please login to create a poll'}), 200
     return render_template('create_poll.html')
 
 
-@app.route('/poll', methods=['POST'])
+@app.route('/poll/<int:poll_id>')
 def poll(poll_id):
     
     poll = get_poll(poll_id)
@@ -167,6 +170,11 @@ def home():
 
 def get_all_polls():
     return Poll.query.all()
+
+@app.route('/logout')
+def logout():
+    logout_user()  # Logout the current user
+    return redirect(url_for("home"))
 
 
 if __name__ == '__main__':

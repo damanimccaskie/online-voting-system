@@ -7,7 +7,7 @@
         <div class="mb-3">
             {% for choice in poll.choices %}
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="choice">
+                <input class="form-check-input" type="radio" value="" id="flexCheckDefault" name="choice">
                 <label class="form-check-label" for="flexCheckDefault">
                   {{ choice.text }}
                 </label>

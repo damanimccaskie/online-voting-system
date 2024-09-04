@@ -11,7 +11,7 @@
     </small>
     <ul>
         {% for poll in polls %}
-        <li>{{ poll.title }}</li>
+        <li><a href="{{ url_for('poll', poll_id=poll.id) }}">{{ poll.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
